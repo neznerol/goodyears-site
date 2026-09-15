@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Good Years — How the numbers are made</title>
+<meta name="description" content="Every data source, hazard ratio and modelling decision behind Good Years' population estimates, with what the model cannot know and what has been corrected.">
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    max-width: 44rem; margin: 0 auto; padding: 2rem 1.25rem 4rem;
+    color: #1d1d1f; background: #fff;
+  }
+  @media (prefers-color-scheme: dark) {
+    body { color: #f5f5f7; background: #1c1c1e; }
+    a { color: #6cb2ff; }
+    th, td { border-color: #3a3a3c !important; }
+    .note { background: #2c2c2e !important; }
+  }
+  h1 { font-size: 1.6rem; line-height: 1.25; }
+  h2 { font-size: 1.2rem; margin-top: 2.5rem; }
+  h3 { font-size: 1.02rem; margin-top: 1.6rem; }
+  .lede { font-size: 1.05rem; }
+  .note { background: #f2f2f7; border-radius: 10px; padding: 0.8rem 1rem; font-size: 0.95rem; }
+  .table { overflow-x: auto; margin: 0.8rem 0 1rem; }
+  table { border-collapse: collapse; font-size: 0.9rem; min-width: 34rem; width: 100%; }
+  th, td { text-align: left; vertical-align: top; padding: 0.4rem 0.5rem; border-bottom: 1px solid #d2d2d7; }
+  th { font-weight: 600; }
+  td.n { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .kind { display: block; font-size: 0.8rem; opacity: 0.75; white-space: normal; max-width: 11rem; margin-top: 0.2rem; }
+  @media (max-width: 640px) {
+    .table table, .table tbody, .table tr, .table td { display: block; min-width: 0; }
+    .table thead { display: none; }
+    .table tr { padding: 0.7rem 0; border-bottom: 1px solid #d2d2d7; }
+    .table td { border: 0; padding: 0.1rem 0; }
+    td.n, .kind { white-space: normal; }
+  }
+  @media (max-width: 640px) and (prefers-color-scheme: dark) {
+    .table tr { border-color: #3a3a3c; }
+  }
+  nav ol { padding-left: 1.2rem; }
+  small, .small { font-size: 0.88rem; }
+  footer { margin-top: 3rem; font-size: 0.9rem; opacity: 0.75; }
+</style>
+</head>
+<body>
+
+<h1>How the numbers in Good Years are made</h1>
+
+<p class="lede">Good Years shows two figures: how long people who answered like
+you live on average, and how many of those years are typically spent in good
+health. This page describes every data source, every effect size and every
+modelling decision behind them, including the ones we are least sure of.</p>
+
+<p class="note"><strong>These are population estimates, not a prediction about
+you.</strong> They are averages across large groups of people, shown as ranges.
+Your own health and lifespan depend on many things no app can know, including
+genetics, medical history and chance. Good Years is for education and
+motivation only. It does not provide medical advice, diagnosis or treatment. For
+decisions about your health, talk to a doctor or qualified health
+professional.</p>
+
+<p class="small">Describes Good Years 1.1. Last updated 15 September 2026.
+Everything described here runs on your phone; nothing you answer is sent
+anywhere.</p>
+
+<nav>
+<ol>
+  <li><a href="#short">In short</a></li>
+  <li><a href="#baseline">The starting point: your country, age and sex</a></li>
+  <li><a href="#answers">How your answers adjust it</a></li>
+  <li><a href="#healthy">Healthy years</a></li>
+  <li><a href="#range">Why it is a range</a></li>
+  <li><a href="#factors">Every question, and the evidence behind it</a></li>
+  <li><a href="#checks">How the model is checked</a></li>
+  <li><a href="#learned">Things the evidence made us change</a></li>
+  <li><a href="#cannot">What these numbers can't know</a></li>
+  <li><a href="#left-out">What we left out, and why</a></li>
+  <li><a href="#corrections">Corrections</a></li>
+  <li><a href="#sources">Data, licences and attribution</a></li>
+</ol>
+</nav>
+
+<h2 id="short">1. In short</h2>
+<ul>
+  <li>The starting point is the United Nations' life tables for your country,
+  age and sex, projected forward using the UN's own assumptions about how
+  mortality will improve.</li>
+  <li>The healthy share of life comes from World Health Organization data for
+  your country and sex.</li>
+  <li>Each answer adjusts that starting point by an effect size taken from, or
+  derived from, large long-term studies. The effects are scaled so that someone
+  who answers like the average person gets their country's published
+  figure.</li>
+  <li>Habits overlap, so their combined effect is held to what studies that
+  measured several habits together actually found.</li>
+  <li>The model is checked against those studies automatically every time it
+  changes, and a change that pushes it outside them is rejected.</li>
+</ul>
+
+<h2 id="baseline">2. The starting point: your country, age and sex</h2>
+
+<h3>Life expectancy</h3>
+<p>The baseline is the <strong>United Nations World Population Prospects
+2024</strong> complete life tables: mortality by single year of age, 0 to
+100+, for 237 countries and territories, for men and women separately. The most
+recent observed year is 2023.</p>
+
+<p>A published life table holds today's death rates fixed for the rest of a
+life. That is the standard summary of current conditions, but a 40-year-old
+will live through the death rates of the coming decades, not today's. Using the
+fixed table understated life expectancy by roughly 4–5 years at age 40 and 6
+years at 30. So Good Years projects each country's death rates forward using
+improvement rates fitted to the UN's own 2024–2070 projections, separately for
+every country, sex and age. The fit reproduces the UN's projected figures to
+within about a tenth of a year.</p>
+
+<p><strong>This is a moderately optimistic choice, and we say so.</strong> The
+UN's medium scenario assumes mortality at midlife improves by roughly 1.4–2.1%
+a year. Across the 2010s the UK and US actually saw 0.5–1.1%. Assuming no
+improvement at all would not have been neutral either, just less visible. The
+uncertainty this creates is carried in the range (<a href="#range">section
+5</a>).</p>
+
+<h3>The healthy share of life</h3>
+<p>The WHO publishes <strong>healthy life expectancy (HALE)</strong>: the years
+a population can expect to live in full health, with any loss of health weighted
+by how severe it is. That includes serious illness, but most of it is common,
+milder problems like back pain, low mood, hearing loss and eyesight.</p>
+
+<p>Good Years does not use WHO's absolute HALE figures, because WHO's life
+expectancy and the UN's differ by several years for some countries. Instead it
+takes the <em>healthy share</em> of life (HALE divided by WHO life expectancy,
+both from WHO's 2021 data) and applies that share to the UN baseline. For
+example, the share is 0.878 for Denmark and 0.852 for the United States.</p>
+
+<p>WHO publishes that share at birth. The share of <em>remaining</em> life that
+is healthy is lower at 60, and falls further with age. Good Years estimates the
+age-60 share from the birth share with one constant per sex (checked against
+WHO's own age-60 figures across all 185 countries, where it is within about 0.2
+healthy years on average). After 60, the healthy share of remaining life
+declines by 0.4 percentage points a year. That rate was fitted to WHO's figures
+and the life tables, not chosen, and it sits in the same direction as, but less
+steep than, US survey data on disability-free years.</p>
+
+<p>WHO publishes healthy-life figures for 185 of the 237 countries and
+territories.</p>
+
+<h2 id="answers">3. How your answers adjust it</h2>
+
+<h3>Hazard ratios</h3>
+<p>Long-term studies usually report a <strong>hazard ratio</strong>: how much
+higher or lower the death rate is, at any given age, for people in one group
+compared with a reference group. A hazard ratio of 1.30 means a 30% higher rate;
+0.80 means 20% lower. Good Years multiplies the baseline death rate at every age
+from yours onwards by the hazard ratio for your answer, then recalculates life
+expectancy from the adjusted table. This is the standard way actuaries and
+epidemiologists turn a relative risk into years.</p>
+
+<h3>Measured against the average, not the ideal</h3>
+<p>Your country's life table already reflects a population that includes
+smokers, non-smokers, heavy drinkers and people who never drink. Applying hazard
+ratios measured against the <em>best</em> group would put almost everyone below
+their country's figure. So every answer's hazard ratio is divided by the
+population average for that question, weighted by how common each answer is.
+Someone who answers like the average person lands on their country's published
+figure. The shares of people giving each answer come from national surveys
+(NHANES, NHIS, BRFSS, Eurostat's EHIS and others). They describe how adults in
+high-income countries <em>answer</em> these questions, which is the right
+comparison for a questionnaire.</p>
+
+<h3>Habits overlap</h3>
+<p>People who smoke also tend to drink more; people who are inactive tend to
+weigh more. Multiplying each habit's full hazard ratio would count the same
+risk several times. Good Years adds up the (logarithmic) effects of your answers
+and then shrinks the total according to how many factors are really
+contributing. With one answer, nothing is shrunk, so a single factor reproduces
+its own study. With several, the combined effect is held near what
+<strong>Li et al. 2018</strong> measured for five habits together. The strength
+of that shrinking was set by testing it against Li's figures, not by
+assumption.</p>
+
+<p><strong>This is why changes in the app can look smaller than the headlines
+you may have read.</strong> "Smokers lose about ten years" compares smokers
+with non-smokers who also differ in many other ways. Once you have told Good
+Years about those other ways, what it shows for quitting is the part that
+belongs to smoking alone.</p>
+
+<h3>Two further adjustments</h3>
+<ul>
+  <li><strong>The weight effect weakens with age.</strong> In the study behind the
+  weight bands, the extra hazard per 5 units of BMI falls from 1.52 in people
+  aged 35–49 to 1.21 at 70–89. Good Years applies the full effect up to 42,
+  reduces it steadily to 45.5% of its (logarithmic) size by 80, and holds it
+  there.</li>
+  <li><strong>A one-question diet answer is a rough measure.</strong> The diet
+  studies scored diet from detailed food questionnaires. One self-rated
+  question agrees with that kind of score only weakly, and most people who
+  misjudge their diet rate it better than it is. So the diet effect is reduced
+  to 60% of the measured contrast. We intended to halve it, but at 50% the model
+  no longer matched Li's combined figure, so the calibration set the floor.</li>
+</ul>
+
+<h2 id="healthy">4. Healthy years</h2>
+<p>Better answers are associated with more years of life and, in the
+research, with a larger share of those years in good health. Good Years moves
+your healthy share of remaining life up or down from your country's figure
+according to how your answers compare with the average, weighted by how much
+each factor affects mortality.</p>
+
+<p>How far the share can move is the least certain number in the model, and
+we set it conservatively. The best-known study (<strong>Nyberg et al.
+2020</strong>) counts years free of six major diagnosed conditions between ages
+40 and 75, which makes the effect look larger than it would over a whole life.
+Measured to the end of life instead, <strong>Li et al. 2020</strong> found a
+much smaller difference. HALE also counts every kind of ill health, much of
+which none of these questions touch. Taking both into account, the best and
+worst possible answers are allowed to differ by about 14 percentage points in
+healthy share.</p>
+
+<h2 id="range">5. Why it is a range</h2>
+<p>Every life figure is shown as a range. It combines two kinds of
+uncertainty:</p>
+<ul>
+  <li><strong>What no questionnaire can know about anyone</strong>, sized at
+  age 40 and scaled with remaining life: income and social position (about 1.8
+  years), family history (about 1.3), medical conditions the app does not ask
+  about (about 1.7), how well study results carry between countries plus the
+  uncertainty in the studies themselves (about 1.5), and whether mortality
+  really improves as fast as the UN assumes (about 2.5). Combined, that is
+  about ±4 years at 40. It never goes away, however many questions you
+  answer.</li>
+  <li><strong>What you have not told the app yet.</strong> For each question
+  you skip, the range widens by how much life expectancy actually varies across
+  the possible answers, weighted by how common each is. Skipping a question
+  that matters a lot widens it a lot; skipping one that matters little barely
+  moves it.</li>
+</ul>
+<p>The range never starts below your current age.</p>
+
+<h2 id="factors">6. Every question, and the evidence behind it</h2>
+
+<p>Each hazard ratio is marked with where it comes from:</p>
+<ul class="small">
+  <li><strong>published</strong>: the figure appears in the cited study;</li>
+  <li><strong>derived</strong>: calculated from the study's reported results
+  (for example by combining two published bands);</li>
+  <li><strong>our choice</strong>: a modelling decision, explained in the
+  note;</li>
+  <li><strong>not yet checked</strong>: we have not been able to read the part
+  of the paper the figure would come from.</li>
+</ul>
+<p class="small">Hazard ratios are listed in the same order as the answers.
+Checked against the papers on 15 September 2026.</p>
+
+<h3>The main interview</h3>
+
+<div class="table"><table>
+<thead><tr><th>Question and answers</th><th>Hazard ratio</th><th>Source and notes</th></tr></thead>
+<tbody>
+<tr>
+  <td><strong>Smoking</strong><br>Never · quit before 40 · quit in 40s · quit at 50+ · smokes now</td>
+  <td class="n">1.00 · 1.05 · 1.30 · 1.70 · 2.80<br><span class="kind">reference · not yet checked (former smokers) · published (2.80)</span></td>
+  <td><a href="https://doi.org/10.1056/NEJMsa1211128">Jha et al. 2013</a>, <em>New England Journal of Medicine</em>. 113,752 women and 88,496 men aged 25 and over in the US National Health Interview Survey. Current smokers had 2.8 times the death rate of never-smokers for men and 3.0 for women, and lost more than ten years of life expectancy. People who quit at 25–34, 35–44 or 45–54 gained about 10, 9 and 6 years compared with those who kept smoking. The former-smoker hazard ratios are ours, built to match those years; the paper's own figures for them are in tables we have not been able to read.</td>
+</tr>
+<tr>
+  <td><strong>Exercise</strong><br>Hardly any · under 1½ h/week · 1½–5 h · over 5 h</td>
+  <td class="n">1.00 · 0.80 · 0.69 · 0.65<br><span class="kind">reference · published · published · derived</span></td>
+  <td><a href="https://doi.org/10.1001/jamainternmed.2015.0533">Arem et al. 2015</a>, <em>JAMA Internal Medicine</em>. 661,137 adults in six cohorts, 116,686 deaths. Compared with no leisure-time activity: 0.80 below the recommended minimum, 0.69 at one to two times it, 0.63 at two to three times, 0.61 at three to five times, and 0.69 at ten times or more. "More than 5 hours" covers all of those higher bands, so the app uses 0.65. The study measures activity in MET-hours; the app's hours assume moderate intensity, such as brisk walking.</td>
+</tr>
+<tr>
+  <td><strong>Alcohol</strong> (drinks per week)<br>0–7 · 8–14 · 15–25 · over 25</td>
+  <td class="n">1.00 · 1.06 · 1.20 · 1.45<br><span class="kind">reference · derived</span></td>
+  <td><a href="https://doi.org/10.1016/S0140-6736(18)30134-X">Wood et al. 2018</a>, <em>The Lancet</em>. 599,912 current drinkers in 83 studies; lowest risk at or below about 100 g of alcohol a week. Compared with up to 100 g, drinking 100–200 g, 200–350 g and more than 350 g a week was associated with about 6 months, 1–2 years and 4–5 years lower life expectancy at 40. The paper shows its hazard ratio for each band only as a chart, so ours can't be matched to a printed figure. The study included only current drinkers, so it cannot show whether drinking nothing is better than drinking a little. We don't claim either.</td>
+</tr>
+<tr>
+  <td><strong>Weight</strong> (BMI, from height and weight)<br>Under 18.5 · 18.5–25 · 25–30 · 30–35 · 35–40 · 40+</td>
+  <td class="n">1.51 · 1.00 · 1.13 · 1.45 · 1.94 · 2.76<br><span class="kind">published · derived · derived · published · published · published</span></td>
+  <td><a href="https://doi.org/10.1016/S0140-6736(16)30175-1">Global BMI Mortality Collaboration 2016</a>, <em>The Lancet</em>. 10.6 million adults in 239 studies; main analysis in 3,951,455 never-smokers without known chronic disease. The paper uses finer bands than the app asks about: 18.5–20 is 1.13, 20–25 is 1.00, 25–27.5 is 1.07 and 27.5–30 is 1.20. The app merges these into 18.5–25 at 1.00 and 25–30 at 1.13, so the lower end of the "healthy" band carries somewhat more risk in the study than the app shows. The effect weakens with age (section 3). Being underweight is mostly a sign of existing illness rather than a cause, so the app never offers weight gain as a change and suggests talking to a doctor instead. Risk at a given BMI starts rising at lower values in Asian populations; the app does not model this.</td>
+</tr>
+<tr>
+  <td><strong>Sleep</strong><br>Under 5 h · 5–6 · 6–7 · 7–8 · 8–9 · over 9</td>
+  <td class="n">1.10 · 1.04 · 1.01 · 1.00 · 1.04 · 1.08<br><span class="kind">derived · published · published · reference · published · our choice</span></td>
+  <td><a href="https://doi.org/10.1161/JAHA.117.005947">Yin et al. 2017</a>, <em>Journal of the American Heart Association</em>. 3,582,016 participants, 241,107 deaths, lowest risk near 7 hours. The paper gives the curve at whole hours: 1.12 at 3 hours, 1.08 at 4, 1.04 at 5, 1.01 at 6, 1.00 at 7, 1.04 at 8, 1.15 at 9 and 1.32 at 10. The app uses the value at 5, 6 and 8 hours for the bands starting there, and 1.10 for under 5. For over 9 hours it uses 1.08 instead of 1.15–1.32, because long sleep is largely a sign of illness rather than a cause: using the full figure would have told long sleepers to sleep less. Above 9 hours the app suggests talking to a doctor.</td>
+</tr>
+<tr>
+  <td><strong>Blood pressure</strong> (in the person's own words, no numbers)<br>Normal · high but under control · high and not under control · not checked in a couple of years</td>
+  <td class="n">1.00 · 1.15 · 1.50 · 1.20<br><span class="kind">reference · published (1.16, rounded) · derived · our choice</span></td>
+  <td><a href="https://doi.org/10.1038/s41598-018-27377-2">Zhou et al. 2018</a>, <em>Scientific Reports</em>. 13,947 US adults, median follow-up 19.1 years. Compared with normal blood pressure: treated and controlled 1.16 (95% CI 0.95–1.42), untreated 1.40, treated but not controlled 1.62. The app's single "not under control" answer covers both of the last two, so it uses 1.50. "Not checked" is our estimate for a group that mixes people with normal and undetected high blood pressure, and the app suggests getting it checked rather than offering a number. The SPRINT trial (<a href="https://doi.org/10.1056/NEJMoa1511939">2015</a>, <a href="https://doi.org/10.1056/NEJMoa1901281">2021</a>, <em>NEJM</em>) is the only randomised evidence on death from any cause behind any factor here.</td>
+</tr>
+<tr>
+  <td><strong>Diet</strong> (self-rated)<br>Mostly whole foods · fairly balanced · a mix · often processed or sugary · mostly processed and sugary</td>
+  <td class="n">0.887 · 0.953 · 1.00 · 1.075 · 1.162<br><span class="kind">our choice, from sources</span></td>
+  <td>Built from <a href="https://doi.org/10.1136/bmj.a1344">Sofi et al. 2008</a> (<em>BMJ</em>), <a href="https://doi.org/10.1016/S2468-2667(18)30135-X">Seidelmann et al. 2018</a> (<em>Lancet Public Health</em>) and studies of specific foods. Scored as +2.0 to −2.5 years at age 50, a range we chose to keep diet inside the whole-lifestyle effect in Li et al. 2018. It is not a figure from any one paper. Reduced to 60% for being one self-rated question (section 3). The shares of each answer are how US adults rate their own diet (<a href="https://doi.org/10.1177/08901171221137056">Thomson et al. 2023</a>, NHANES 2015–2018, n=9,757).</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Optional questions</h3>
+<p>These are asked later, only if you choose. They describe your situation rather than a habit, so the app never offers changing them as something to do. They make the estimate more accurate, and some answers come with a suggestion to talk to a doctor.</p>
+
+<div class="table"><table>
+<thead><tr><th>Question and answers</th><th>Hazard ratio</th><th>Source and notes</th></tr></thead>
+<tbody>
+<tr>
+  <td><strong>Diabetes</strong><br>No · told close to it · diagnosed 55+ · diagnosed 40s–early 50s · diagnosed before 40</td>
+  <td class="n">1.00 · 1.13 · 1.54 · 2.00 · 2.64<br><span class="kind">reference · published · derived · derived · published</span></td>
+  <td><a href="https://doi.org/10.1016/S2213-8587(23)00223-1">Emerging Risk Factors Collaboration 2023</a>, <em>Lancet Diabetes &amp; Endocrinology</em>. 1,515,718 people in 96 cohorts and UK Biobank, 23.1 million person-years. How early the diagnosis came matters more than the diagnosis alone, so the answers are split by age at diagnosis. Compared with no diabetes, and adjusted for age, sex, smoking, BMI, blood pressure and cholesterol, the paper gives 2.64 for a diagnosis in the 30s, 2.24 in the 40s, 1.79 in the 50s, 1.55 in the 60s and 1.41 at 70 or later. The app's answers span those decades, so "40s or early 50s" and "55 or later" combine them, weighted by how many people in the study were diagnosed at each age. "Told I'm close to it" is from <a href="https://doi.org/10.1136/bmj.m2297">Cai et al. 2020</a>, <em>BMJ</em>: 1.13 (1.10–1.17) across 129 studies and 10 million people, where "prediabetes" was defined by a blood test. <strong>Good Years 1.1 used lower figures</strong> (1.15, 1.50, 1.80 and 2.20) that placed each band one decade too young; see <a href="#corrections">Corrections</a>.</td>
+</tr>
+<tr>
+  <td><strong>Hearing</strong> (with a hearing aid, if used)<br>No difficulty · a little · quite a lot · a great deal</td>
+  <td class="n">1.00 · 1.10 · 1.28 · 1.45<br><span class="kind">reference · our choice · published · our choice</span></td>
+  <td><a href="https://doi.org/10.1371/journal.pone.0333125">Jia et al. 2025</a>, <em>PLoS One</em>. Meta-analysis of 36 cohort studies, 6,364,914 participants. Hearing loss overall: 1.21 (1.13–1.31); hearing loss measured by a hearing test: 1.28 (1.10–1.49), stronger than when it was self-reported. The app asks about day-to-day difficulty but uses the measured figure. The other two bands are spaced around it; the study has no severity levels. We chose it over a single-cohort figure of 1.40 (<a href="https://doi.org/10.1016/S2666-7568(23)00232-5">Choi et al. 2024</a>, 9,885 US adults) because it pools far more people.</td>
+</tr>
+<tr>
+  <td><strong>Eyesight</strong> (with glasses or contacts)<br>Good · some difficulty · a lot · severe</td>
+  <td class="n">1.00 · 1.29 · 1.43 · 1.89<br><span class="kind">reference · published · published · published</span></td>
+  <td><a href="https://doi.org/10.1016/S2214-109X(20)30549-0">Ehrlich et al. 2021</a>, <em>Lancet Global Health</em>. A systematic review of 28 studies (446,088 participants); the hazard ratios come from its meta-analysis of 17 studies (47,998 participants). They are for eyesight measured on a chart: 1.29 for worse than 6/12, 1.43 for worse than 6/18, and 1.89 for worse than 6/60, the last from a single study. The app asks about day-to-day difficulty instead.</td>
+</tr>
+</tbody>
+</table></div>
+
+<h2 id="checks">7. How the model is checked</h2>
+<p>Every change to the model runs against a set of automated checks. The main
+ones hold it to studies that measured the result directly:</p>
+<ul>
+  <li><strong>One factor on its own.</strong> Someone who answers only the
+  smoking question must see a difference between smoking and never having
+  smoked within 2.5 years of the ten Jha et al. found.</li>
+  <li><strong>All habits together.</strong> The difference between the best
+  and worst answers to everything must be within 2 years of what Li et al. 2018
+  (<em>Circulation</em>, 123,219 adults) measured at age 50 for five low-risk
+  habits against none: 14.0 years for women, 12.2 for men.</li>
+  <li><strong>Healthy years.</strong> The best-versus-worst difference in
+  healthy years must be more than 9 years but less than 18. Nyberg et al. 2020
+  (<em>JAMA Internal Medicine</em>, 116,043 adults) found 9.9 years for men and
+  9.4 for women free of major chronic disease, counted only between 40 and 75,
+  so a whole-life figure should be larger.</li>
+  <li><strong>The average person.</strong> A profile with no answers must
+  reproduce the country's published figure.</li>
+  <li><strong>Every change the app offers</strong> must be associated with more
+  healthy years and a larger healthy share of life. The automated check runs
+  this for a profile with several unhealthy answers, in three countries and at
+  four ages. A wider one-off sweep of 1,200 offered changes found the same.</li>
+</ul>
+<p>When a proposed change to an effect size breaks one of these, the change is
+treated as too large, not the check as too strict.</p>
+
+<h2 id="learned">8. Things the evidence made us change</h2>
+
+<h3>Better answers are associated with more good years, not reliably with less time in poorer health</h3>
+<p>It would be simple, and appealing, to say that healthier habits shrink the
+years lived in poor health. The evidence doesn't support it. Living longer
+tends to add years at both ends. A review of 20 studies covering 26 cohorts
+(Dieteren et al. 2021) found that about half showed <em>more</em> years in
+poor health for people who never smoked than for smokers, while nearly all
+found a smaller <em>share</em> of life in poor health. Li et al. 2020 found the time in poor health got
+shorter for women and longer for men in the same study. In Good Years' own
+model, the gap between the two figures gets slightly wider for about half of
+1,200 changes we tested.</p>
+<p>What held for every change we tested is that a better answer is associated
+with <strong>more healthy years</strong> and a <strong>larger share of life in
+good health</strong>. That is what the app says, and it does not promise to
+close the gap.</p>
+
+<h3>Some answers are a reason to see a doctor, not a habit to change</h3>
+<p>Being underweight, sleeping more than nine hours, and not having had your
+blood pressure checked all carry a real statistical association. In each case
+the honest next step is to talk to a doctor, not to chase a number, so the app
+counts them in the estimate but never offers them as a change. The same goes for
+more serious hearing and eyesight difficulty.</p>
+
+<h3>"No significant difference" is not "the same"</h3>
+<p>An early version treated blood pressure under control as equivalent to
+normal, because the study's result for that group wasn't statistically
+significant. But not being able to show a difference is not showing there is
+none, and both studies we found put the figure above 1. It is now 1.15. Getting
+blood pressure under control is still associated with one of the largest
+differences the app shows.</p>
+
+<h2 id="cannot">9. What these numbers can't know</h2>
+<ul>
+  <li>Your genetics and family history, which matter enormously and no
+  questionnaire can capture.</li>
+  <li>Almost any medical condition you already live with. Diabetes is the one
+  the app asks about; anything else — heart disease, cancer, lung or kidney
+  conditions — is invisible to it, and the estimates will be least accurate for
+  people living with one.</li>
+  <li>Where you live within your country, and your income, education, air
+  quality, healthcare access and safety. The difference between the richest and
+  poorest in one country can exceed anything on this page.</li>
+  <li>The extremes. The outermost answers sit at the edge of what the studies
+  measured. Someone sleeping two hours a night is worse off than the "under 5
+  hours" answer suggests.</li>
+  <li>Most of the research comes from Europe and North America. Good Years
+  assumes the relative effects carry across countries, which is standard
+  practice and also the model's largest simplification.</li>
+  <li>Men and women get the same hazard ratios; only their life tables differ.
+  Li et al. found a larger best-versus-worst difference for women, and the model
+  gives a slightly larger one for men. Fixing it would mean inventing
+  sex-specific figures for most factors, which the sources don't provide.</li>
+  <li>How common each answer is doesn't change with age in the model, although
+  in reality it does, most for diabetes and blood pressure.</li>
+  <li>Healthy life expectancy is a population measure built from severity
+  weights. It describes a population's typical experience, not anyone's
+  diagnosis.</li>
+</ul>
+
+<h2 id="left-out">10. What we left out, and why</h2>
+<p>Many things are associated with longer life in the research. A factor gets
+a question only if a large study supports it, the question can be answered
+honestly without a device or a test, and it doesn't just repeat something
+already asked. Some that didn't make it:</p>
+<ul>
+  <li><strong>Sitting time.</strong> In a harmonised analysis of 1,005,791
+  people (Ekelund et al. 2016), sitting more than 8 hours a day showed no clear
+  effect in the most active quarter. It would mostly count inactivity
+  twice.</li>
+  <li><strong>Daily step count.</strong> A real dose-response, but it measures
+  the same thing as the exercise question, and nobody can report their steps
+  without a device.</li>
+  <li><strong>Water intake.</strong> No association in the pooled
+  evidence.</li>
+  <li><strong>Marriage or partnership.</strong> A sizeable association, but
+  nothing anyone can honestly be advised to change.</li>
+  <li><strong>Purpose in life.</strong> The association mostly appears in the
+  years just before death, which suggests illness lowers the sense of purpose
+  rather than the other way round.</li>
+  <li><strong>Sauna use.</strong> One cohort, one country, men only, and an
+  effect that fades with longer follow-up.</li>
+  <li><strong>Social contact, tooth loss and road safety</strong> were in an
+  earlier version and removed. Social contact looks more like a marker than a
+  cause in the stronger evidence. Tooth loss largely repeats smoking, diet and
+  income. Road safety changed nobody's figure except motorcyclists and people
+  who sometimes skip a seatbelt. Together, the three narrowed the range by
+  days.</li>
+</ul>
+
+<h2 id="corrections">11. Corrections</h2>
+<p>We check citations against the papers themselves. These are the changes
+that checking has produced. If you find another, please
+<a href="support.html">tell us</a>.</p>
+<div class="table"><table>
+<thead><tr><th>Date</th><th>What changed</th></tr></thead>
+<tbody>
+<tr><td class="n">2026-09-15</td><td>Diabetes: 2.20, 1.80 and 1.50 → 2.64, 2.00 and 1.54 for a diagnosis before 40, in the 40s or early 50s, and at 55 or later. Checking this page against the paper showed each band had been given the figure for the decade after it, which understated the association. "Told I'm close to it": 1.15 → 1.13, now from a named source. Corrected in the version after 1.1.</td></tr>
+<tr><td class="n">2026-08-28</td><td>Blood pressure under control: 1.05 → 1.15. The earlier figure treated a non-significant result as equivalence (section 8).</td></tr>
+<tr><td class="n">2026-08-28</td><td>A blood-pressure study was cited with the wrong year and with figures from its secondary analysis. The paper is Foti et al. <strong>2025</strong>, <em>Hypertension</em> 82:1095–1105; its primary analysis gives +0.9 years of life and +2.7 healthy years for lifelong prevention. The model did not depend on the wrong figures.</td></tr>
+<tr><td class="n">2026-08-28</td><td>A tooth-loss study was attributed to the wrong journal. It is Peng et al. 2019, <em>Bioscience Reports</em>. (The factor was later removed.)</td></tr>
+<tr><td class="n">2026-08-28</td><td>Hearing: 1.40 → 1.28, replacing a single-cohort figure with a meta-analysis of 6.4 million people.</td></tr>
+<tr><td class="n">2026-08-28</td><td>Long sleep: 1.15 and 1.30 → 1.04 and 1.08, because long sleep is mostly a sign of illness rather than a cause. Underweight and over-nine-hours sleep are no longer offered as changes.</td></tr>
+<tr><td class="n">2026-08-28</td><td>Fixed life tables replaced with projected ones, which raised estimates by about 4–5 years at 40 and made the range wider.</td></tr>
+<tr><td class="n">2026-08-28</td><td>How far healthy share can move was halved, after finding that the original target came from a study counting only ages 40–75.</td></tr>
+<tr><td class="n">2026-08-30</td><td>Every answer's population share replaced with figures from named national surveys; several earlier values had been estimates.</td></tr>
+<tr><td class="n">2026-08-31</td><td>BMI 40 and above restored as its own band (2.76). It had been grouped with 35–40 (1.94), understating the effect for the group it matters most to.</td></tr>
+<tr><td class="n">2026-08-31</td><td>Diet: answer shares taken from how people actually rate their diet (they were assumed equal), and the effect reduced to 60% for being one self-rated question.</td></tr>
+</tbody>
+</table></div>
+
+<h2 id="sources">12. Data, licences and attribution</h2>
+<p>Life tables are © United Nations, World Population Prospects 2024, licensed
+under <a href="https://creativecommons.org/licenses/by/3.0/igo/">CC BY 3.0
+IGO</a>.</p>
+<p>Healthy-life proportions are derived by Good Years from World Health
+Organization data (data.who.int, healthy life expectancy and life expectancy
+indicators), licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. The
+proportions are calculated by Good Years and are not WHO-published figures. WHO
+does not endorse this app.</p>
+<h3 id="references">References</h3>
+<p class="small">Titles, volumes, pages and DOIs taken from each paper's PubMed record on
+15 September 2026.</p>
+<ol class="small">
+  <li>Arem H, et al. Leisure time physical activity and mortality: a detailed pooled analysis of the dose-response relationship. <em>JAMA Intern Med</em> 2015;175:959–67. <a href="https://doi.org/10.1001/jamainternmed.2015.0533">doi:10.1001/jamainternmed.2015.0533</a></li>
+  <li>Cai X, et al. Association between prediabetes and risk of all cause mortality and cardiovascular disease: updated meta-analysis. <em>BMJ</em> 2020;370:m2297. <a href="https://doi.org/10.1136/bmj.m2297">doi:10.1136/bmj.m2297</a></li>
+  <li>Choi JS, et al. Association between hearing aid use and mortality in adults with hearing loss in the USA: a mortality follow-up study of a cross-sectional cohort. <em>Lancet Healthy Longev</em> 2024;5:e66–e75. <a href="https://doi.org/10.1016/S2666-7568(23)00232-5">doi:10.1016/S2666-7568(23)00232-5</a></li>
+  <li>Dieteren CM, et al. Mixed evidence for the compression of morbidity hypothesis for smoking elimination — a systematic literature review. <em>Eur J Public Health</em> 2021;31:409–17. <a href="https://doi.org/10.1093/eurpub/ckaa235">doi:10.1093/eurpub/ckaa235</a></li>
+  <li>Ehrlich JR, et al. Association between vision impairment and mortality: a systematic review and meta-analysis. <em>Lancet Glob Health</em> 2021;9:e418–e430. <a href="https://doi.org/10.1016/S2214-109X(20)30549-0">doi:10.1016/S2214-109X(20)30549-0</a></li>
+  <li>Ekelund U, et al. Does physical activity attenuate, or even eliminate, the detrimental association of sitting time with mortality? A harmonised meta-analysis of data from more than 1 million men and women. <em>Lancet</em> 2016;388:1302–10. <a href="https://doi.org/10.1016/S0140-6736(16)30370-1">doi:10.1016/S0140-6736(16)30370-1</a></li>
+  <li>Emerging Risk Factors Collaboration. Life expectancy associated with different ages at diagnosis of type 2 diabetes in high-income countries: 23 million person-years of observation. <em>Lancet Diabetes Endocrinol</em> 2023;11:731–42. <a href="https://doi.org/10.1016/S2213-8587(23)00223-1">doi:10.1016/S2213-8587(23)00223-1</a></li>
+  <li>Foti K, et al. Hypertension prevention and healthy life expectancy in Black adults: the Jackson Heart Study. <em>Hypertension</em> 2025;82:1095–1105. <a href="https://doi.org/10.1161/HYPERTENSIONAHA.124.23702">doi:10.1161/HYPERTENSIONAHA.124.23702</a></li>
+  <li>Global BMI Mortality Collaboration. Body-mass index and all-cause mortality: individual-participant-data meta-analysis of 239 prospective studies in four continents. <em>Lancet</em> 2016;388:776–86. <a href="https://doi.org/10.1016/S0140-6736(16)30175-1">doi:10.1016/S0140-6736(16)30175-1</a></li>
+  <li>Jha P, et al. 21st-century hazards of smoking and benefits of cessation in the United States. <em>N Engl J Med</em> 2013;368:341–50. <a href="https://doi.org/10.1056/NEJMsa1211128">doi:10.1056/NEJMsa1211128</a></li>
+  <li>Jia J, et al. Hearing loss and its association with all-cause and cause-specific mortality: a meta-analysis of cohort studies. <em>PLoS One</em> 2025;20:e0333125. <a href="https://doi.org/10.1371/journal.pone.0333125">doi:10.1371/journal.pone.0333125</a></li>
+  <li>Lewis CE, et al. (SPRINT Research Group). Final report of a trial of intensive versus standard blood-pressure control. <em>N Engl J Med</em> 2021;384:1921–30. <a href="https://doi.org/10.1056/NEJMoa1901281">doi:10.1056/NEJMoa1901281</a></li>
+  <li>Li Y, et al. Impact of healthy lifestyle factors on life expectancies in the US population. <em>Circulation</em> 2018;138:345–55. <a href="https://doi.org/10.1161/CIRCULATIONAHA.117.032047">doi:10.1161/CIRCULATIONAHA.117.032047</a></li>
+  <li>Li Y, et al. Healthy lifestyle and life expectancy free of cancer, cardiovascular disease, and type 2 diabetes: prospective cohort study. <em>BMJ</em> 2020;368:l6669. <a href="https://doi.org/10.1136/bmj.l6669">doi:10.1136/bmj.l6669</a></li>
+  <li>Nyberg ST, et al. Association of healthy lifestyle with years lived without major chronic diseases. <em>JAMA Intern Med</em> 2020;180:760–68. <a href="https://doi.org/10.1001/jamainternmed.2020.0618">doi:10.1001/jamainternmed.2020.0618</a></li>
+  <li>Peng J, et al. The relationship between tooth loss and mortality from all causes, cardiovascular diseases, and coronary heart disease in the general population: systematic review and dose-response meta-analysis of prospective cohort studies. <em>Biosci Rep</em> 2019;39:BSR20181773. <a href="https://doi.org/10.1042/BSR20181773">doi:10.1042/BSR20181773</a></li>
+  <li>Seidelmann SB, et al. Dietary carbohydrate intake and mortality: a prospective cohort study and meta-analysis. <em>Lancet Public Health</em> 2018;3:e419–e428. <a href="https://doi.org/10.1016/S2468-2667(18)30135-X">doi:10.1016/S2468-2667(18)30135-X</a></li>
+  <li>Sofi F, et al. Adherence to Mediterranean diet and health status: meta-analysis. <em>BMJ</em> 2008;337:a1344. <a href="https://doi.org/10.1136/bmj.a1344">doi:10.1136/bmj.a1344</a></li>
+  <li>Thomson JL, Landry AS, Walls TI. Can United States adults accurately assess their diet quality? <em>Am J Health Promot</em> 2023;37:499–506. <a href="https://doi.org/10.1177/08901171221137056">doi:10.1177/08901171221137056</a></li>
+  <li>Wood AM, et al. Risk thresholds for alcohol consumption: combined analysis of individual-participant data for 599,912 current drinkers in 83 prospective studies. <em>Lancet</em> 2018;391:1513–23. <a href="https://doi.org/10.1016/S0140-6736(18)30134-X">doi:10.1016/S0140-6736(18)30134-X</a></li>
+  <li>Wright JT Jr, et al. (SPRINT Research Group). A randomized trial of intensive versus standard blood-pressure control. <em>N Engl J Med</em> 2015;373:2103–16. <a href="https://doi.org/10.1056/NEJMoa1511939">doi:10.1056/NEJMoa1511939</a></li>
+  <li>Yin J, et al. Relationship of sleep duration with all-cause mortality and cardiovascular events: a systematic review and dose-response meta-analysis of prospective cohort studies. <em>J Am Heart Assoc</em> 2017;6:e005947. <a href="https://doi.org/10.1161/JAHA.117.005947">doi:10.1161/JAHA.117.005947</a></li>
+  <li>Zhou D, et al. Uncontrolled hypertension increases risk of all-cause and cardiovascular disease mortality in US adults: the NHANES III linked mortality study. <em>Sci Rep</em> 2018;8:9418. <a href="https://doi.org/10.1038/s41598-018-27377-2">doi:10.1038/s41598-018-27377-2</a></li>
+</ol>
+<h2>Medical disclaimer</h2>
+<p>Good Years shows statistical estimates based on population data — averages
+across large groups of people, not a prediction about you. Your actual health
+and lifespan depend on many factors no app can know, including genetics,
+medical history, and chance. This app is for education and motivation only; it
+does not provide medical advice, diagnosis, or treatment. For decisions about
+your health, talk to a doctor or qualified health professional.</p>
+
+<footer>
+  <a href="index.html">Good Years</a> · <a href="support.html">Support</a> ·
+  <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a>
+</footer>
+</body>
+</html>
