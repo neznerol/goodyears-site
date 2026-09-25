@@ -5,81 +5,182 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Good Years</title>
 <meta name="description" content="An iPhone app that estimates how long people who answer as you do tend to live, how many of those years are typically spent in good health, and what would move both. Nothing leaves the phone.">
+<link rel="icon" href="img/icon.png">
+<link rel="apple-touch-icon" href="img/icon.png">
 <meta property="og:title" content="Good Years">
 <meta property="og:description" content="Two questions, answered together: how long people who answer the way you do tend to live, and how many of those years they typically spend in good health.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://neznerol.github.io/goodyears-site/">
 <meta property="og:image" content="https://neznerol.github.io/goodyears-site/img/01-reveal.png">
+<meta name="twitter:card" content="summary_large_image">
 <style>
-  :root { color-scheme: light dark; }
-  body {
-    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    max-width: 44rem; margin: 0 auto; padding: 2rem 1.25rem 4rem;
-    color: #1d1d1f; background: #fff;
+  /* The app's own palette (Theme.swift) and its type pairing: the system
+     serif for display, the system sans for everything else. */
+  :root {
+    color-scheme: light dark;
+    --paper: #FAF7F2;
+    --card: #ffffff;
+    --card-border: #E7E1D6;
+    --tinted: #F0F5F2;
+    --ink: #1C2420;
+    --body: #444C47;
+    --subtle: #66706A;
+    --healthy: #2F6D5F;
+    --healthy-deep: #24564B;
+    --gap: #A6702F;
+    --serif: ui-serif, "New York", Georgia, "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
   @media (prefers-color-scheme: dark) {
-    body { color: #f5f5f7; background: #1c1c1e; }
-    a { color: #6cb2ff; }
-    .shots img { border-color: #3a3a3c !important; }
-    .cta { background: #2f6d5f !important; }
+    :root {
+      --paper: #1C2420;
+      --card: #2A362F;
+      --card-border: #3B4A41;
+      --tinted: #24302A;
+      --ink: #F2F4F1;
+      --body: #D2DAD5;
+      --subtle: #9DB4AA;
+      --healthy: #7FB3A3;
+      --healthy-deep: #7FB3A3;
+      --gap: #D9B47E;
+    }
   }
-  h1 { font-size: 1.9rem; line-height: 1.15; margin-bottom: 0.2rem; }
-  h2 { font-size: 1.15rem; margin-top: 2.4rem; }
-  .lede { font-size: 1.1rem; margin-top: 0.6rem; }
+
+  * { box-sizing: border-box; }
+  body {
+    font: 17px/1.62 var(--sans);
+    max-width: 48rem; margin: 0 auto; padding: 2.5rem 1.25rem 4rem;
+    color: var(--body); background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--healthy-deep); }
+
+  header { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.6rem; }
+  header img { width: 62px; height: 62px; border-radius: 14px; }
+  h1 {
+    font-family: var(--serif); font-weight: 600; font-size: 2rem;
+    line-height: 1.1; margin: 0; color: var(--ink);
+  }
+  header p { margin: 0.15rem 0 0; font-size: 0.95rem; color: var(--subtle); }
+
+  .lede { font-size: 1.16rem; line-height: 1.55; color: var(--ink); }
+  .lede strong { font-weight: 600; }
+
+  .get { margin: 2rem 0 0.4rem; }
+  /* Apple only publishes the black badge, which disappears on a dark
+     background. The artwork is left alone and given a light plate to sit on
+     instead — 8px of clear space, above Apple's 1/10-of-height minimum. In
+     light mode the plate is the page colour and so invisible. */
+  .get a {
+    display: inline-block; background: #FAF7F2;
+    padding: 8px; border-radius: 12px;
+  }
+  .get img { height: 52px; width: auto; display: block; }
+  .price { font-size: 0.9rem; color: var(--subtle); margin-top: 0.5rem; }
+
   .shots {
-    display: flex; gap: 1rem; justify-content: center;
-    margin: 2.2rem 0; flex-wrap: wrap;
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 1.8rem 1.6rem; margin: 2.8rem 0 0;
   }
-  .shots img {
-    width: 240px; max-width: 42vw; height: auto;
-    border: 1px solid #d2d2d7; border-radius: 18px;
+  figure { margin: 0; }
+  figure img {
+    width: 100%; height: auto; display: block;
+    border: 1px solid var(--card-border); border-radius: 20px;
+    background: var(--card);
   }
-  .cta {
-    display: inline-block; background: #2f6d5f; color: #fff;
-    padding: 0.7rem 1.4rem; border-radius: 10px;
-    text-decoration: none; font-weight: 600;
+  figcaption {
+    font-size: 0.92rem; color: var(--subtle);
+    margin-top: 0.6rem; line-height: 1.45;
   }
-  .cta:hover { opacity: 0.9; }
-  .price { font-size: 0.92rem; opacity: 0.75; margin-top: 0.6rem; }
-  .disclaimer { font-size: 0.88rem; opacity: 0.8; margin-top: 2.6rem; }
-  footer { margin-top: 2.6rem; font-size: 0.9rem; }
-  footer ul { list-style: none; padding: 0; display: flex; gap: 1.2rem; flex-wrap: wrap; }
+  @media (max-width: 34rem) {
+    .shots { grid-template-columns: 1fr; gap: 2rem; }
+    figure img { max-width: 20rem; margin: 0 auto; }
+    figcaption { text-align: center; }
+  }
+
+  h2 {
+    font-family: var(--serif); font-weight: 600; font-size: 1.32rem;
+    color: var(--ink); margin: 2.8rem 0 0.5rem; line-height: 1.25;
+  }
+  .panel {
+    background: var(--tinted); border: 1px solid var(--card-border);
+    border-radius: 14px; padding: 1.1rem 1.3rem; margin-top: 0.8rem;
+  }
+  .panel p:first-child { margin-top: 0; }
+  .panel p:last-child { margin-bottom: 0; }
+
+  .disclaimer {
+    font-size: 0.88rem; color: var(--subtle);
+    margin-top: 3rem; padding-top: 1.4rem;
+    border-top: 1px solid var(--card-border);
+  }
+  footer { margin-top: 1.6rem; font-size: 0.92rem; }
+  footer ul { list-style: none; padding: 0; margin: 0; display: flex; gap: 1.4rem; flex-wrap: wrap; }
 </style>
 </head>
 <body>
 
-<h1>Good Years</h1>
+<header>
+  <img src="img/icon.png" alt="" width="62" height="62">
+  <div>
+    <h1>Good Years</h1>
+    <p>For iPhone. Nothing leaves the phone.</p>
+  </div>
+</header>
 
 <p class="lede">Two questions, answered together: how long people who answer the
-way you do tend to live, and how many of those years they typically spend in
-good health. The distance between them runs to about a decade across whole
-populations, and almost nobody knows roughly where their own sits.</p>
+way you do tend to live, and <strong>how many of those years they typically
+spend in good health</strong>. The distance between them runs to about a decade
+across whole populations, and almost nobody knows roughly where their own sits.</p>
+
+<p class="get">
+  <a href="https://apps.apple.com/app/id6806843358">
+    <img src="img/app-store-badge.svg" alt="Download Good Years on the App Store" height="52">
+  </a>
+</p>
+<p class="price">Free. One optional purchase, no subscription.</p>
 
 <div class="shots">
-  <img src="img/01-reveal.png" alt="The estimate screen: two figures side by side, a bar showing where good health typically ends, and the biggest single change worth trying." width="552" height="1200">
-  <img src="img/03-add-good-years.png" alt="A list of changes, each one priced in years of life and years of good health." width="552" height="1200">
+  <figure>
+    <img src="img/01-reveal.png" loading="lazy" alt="The estimate screen: two figures side by side, a bar showing where good health typically ends, and the biggest single change worth trying." width="600" height="1304">
+    <figcaption>Two figures side by side, and the distance between them.</figcaption>
+  </figure>
+  <figure>
+    <img src="img/03-add-good-years.png" loading="lazy" alt="A list of changes — quitting smoking, exercising, drinking less, sleeping seven to eight hours — each priced in years of life and years of good health." width="600" height="1304">
+    <figcaption>Each change priced in healthy years, not in good intentions.</figcaption>
+  </figure>
+  <figure>
+    <img src="img/04-after-you-stop-working.png" loading="lazy" alt="The retirement screen: choose an age to stop working, and see how many good years typically follow it." width="600" height="1304">
+    <figcaption>How many good years typically follow the age you have in mind. Years, not money.</figcaption>
+  </figure>
+  <figure>
+    <img src="img/06-about-the-science.png" loading="lazy" alt="The about-these-estimates screen, explaining where the numbers come from and showing a hundred-person grid." width="600" height="1304">
+    <figcaption>Every figure has a study behind it, one tap from the numbers.</figcaption>
+  </figure>
 </div>
-
-<p><a class="cta" href="https://apps.apple.com/app/id6806843358">Get Good Years on the App Store</a></p>
-<p class="price">Free. One optional purchase, no subscription. iPhone.</p>
 
 <h2>What it does</h2>
 
-<p>Ten questions, about three minutes, on an iPhone. Then two figures side by
-side, and a list of changes — each one priced in healthy years rather than in
-good intentions.</p>
+<p>Ten questions, about three minutes. Then two figures side by side, and a list
+of changes — each one drawn from studies that followed hundreds of thousands of
+people for decades, and priced in healthy years.</p>
 
 <h2>It collects nothing</h2>
 
-<p>No account, no sign-in, no analytics, no advertising, no third-party code,
-and no network requests at all — it works in aeroplane mode. Deleting the app
-deletes everything there is, and there is a button in Settings if you would
-rather not wait.</p>
+<div class="panel">
+<p>No account. No sign-in. No analytics, no advertising, no third-party code
+that collects anything. <strong>The app makes no network requests at all</strong>
+— it works in aeroplane mode, and the App Store privacy label reads “Data Not
+Collected”.</p>
+<p>Deleting the app deletes everything there is, and there is a button in
+Settings if you would rather not wait.</p>
+</div>
 
 <h2>It publishes its workings</h2>
 
-<p>Every figure it uses has its source and its verification status on one page:
-<a href="methodology.html">how the numbers are made</a>. That page also says
-what the model cannot know, and what has been corrected since.</p>
+<p>Every figure the app uses has its source and its verification status on one
+page: <a href="methodology.html">how the numbers are made</a>. That page also
+says what the model cannot know, and what has been corrected since.</p>
 
 <p class="disclaimer">Good Years is an educational wellness app. The estimates
 it shows are based on WHO population statistics and published long-term cohort
