@@ -1,0 +1,5 @@
+# Redeemable codes must never reach a public repo — this one is served by
+# GitHub Pages, so a committed file here would be downloadable by anyone.
+promo/
+
+.DS_Store
